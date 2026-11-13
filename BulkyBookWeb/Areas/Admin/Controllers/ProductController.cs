@@ -1,12 +1,14 @@
 ﻿using BulkyBook.Business.Services.IServices;
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -24,6 +26,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Upsert(int? id)
         {
             var categories = await _categoryService.GetAllCategoryAsync();
@@ -52,6 +55,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
 
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ActionName("Upsert")]
@@ -87,38 +91,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     productVM.Product.ImageUrl = Path.Combine(@"\", productPath, fileName).Replace("\\", "/");
                 }
 
-                //if (file != null)
-                //{
-                //    string wwwRootPath = _webHostEnvironment.WebRootPath;
-                //    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                //    string productPath = Path.Combine(wwwRootPath, "images", "products");
 
-                //    if (!Directory.Exists(productPath))
-                //    {
-                //        Directory.CreateDirectory(productPath);
-                //    }
-
-                //    // Delete old image if updating
-                //    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
-                //    {
-                //        var oldImagePath = Path.Combine(
-                //            wwwRootPath,
-                //            productVM.Product.ImageUrl.TrimStart('\\', '/'));
-
-                //        if (System.IO.File.Exists(oldImagePath))
-                //        {
-                //            System.IO.File.Delete(oldImagePath);
-                //        }
-                //    }
-
-                //    // Save new image
-                //    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
-                //    {
-                //        await file.CopyToAsync(fileStream);
-                //    }
-
-                //    productVM.Product.ImageUrl = $"/images/products/{fileName}";
-                //}
 
                 if (productVM.Product.Id == null || productVM.Product.Id == 0)
                 {
@@ -155,44 +128,6 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         }
 
 
-        // Update Product
-
-        // GET
-        //public async Task<IActionResult> Update(int? id)
-        //{
-        //    if (id == null || id == 0)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var product = await _productService.GetProductByIdAsync(id.Value);
-
-        //    if (product == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(product);
-        //}
-
-        //// POST
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[ActionName("Update")]
-        //public async Task<IActionResult> UpdatePOST(Product product)
-        //{
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        await _productService.UpdateProductAsync(product);
-        //        TempData["success"] = "Product updated successfully";
-        //        return RedirectToAction("Index");
-        //    }
-
-        //    return View(product);
-        //}
-
-        // Delete Product
 
 
 
